@@ -1,12 +1,11 @@
 package com.example.demo.publicacao;
 
+import com.example.demo.usuario.UsuarioService;
 import com.example.demo.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Table(name = "Publicacao")
 @Entity(name = "publicacoes")
@@ -31,4 +30,5 @@ public class Publicacao {
     @OneToOne
     @JoinColumn(name = "id_usuario_criador", nullable = false)
     private Usuario id_usuario_criador;
+
 }
