@@ -5,11 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Table(name = "Producao")
-@Entity(name = "producoes")
+@Entity(name = "producao")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,7 +32,8 @@ public class Producao {
     @Column(name = "data_publicacao", nullable = false)
     private LocalDate data_publicacao;
 
-    @OneToOne /// Tenho dúvidas se é mesmo um para um
-    @PrimaryKeyJoinColumn(name = "id_usuario_criador")
-    private Usuario usuario_criador;
+    @ManyToOne
+    @JoinColumn(name = "id_do_usuario", nullable = false)
+    private Usuario id_do_usuario;
+
 }

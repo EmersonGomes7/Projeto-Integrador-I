@@ -19,7 +19,7 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository repository;
 
-    
+
     @PostMapping
     @Transactional
     public ResponseEntity<DTODadosUsuario> usuarioCadastro(@RequestBody @Valid DTODadosUsuario usuarioDTO, UriComponentsBuilder uriBuilder){

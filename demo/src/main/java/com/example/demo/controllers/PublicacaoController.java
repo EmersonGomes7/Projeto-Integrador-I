@@ -26,9 +26,13 @@ public class PublicacaoController {
     @PostMapping
     @Transactional
     public ResponseEntity<DTOPublicacao> publicacaoCadastro(@RequestBody @Valid DTOPublicacao publicacaoDTO, UriComponentsBuilder uriBuilder) {
-        var usuarioCriador = usuarioRepository.getReferenceById(publicacaoDTO.id_usuario_criador());
+        // Checagem da existencia de um usuário
+        var usuarioCriadorOptional = usuarioRepository.findById(publicacaoDTO.id_usuario_criador());
+        if (usuarioCriadorOptional.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
 
-        // TODO: Um not found para quando o usuário não existir
+        var usuarioCriador = usuarioCriadorOptional.get();
 
         var publi = new Publicacao();
         publi.setRede_social(publicacaoDTO.rede_social());
