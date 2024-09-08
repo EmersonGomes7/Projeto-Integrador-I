@@ -23,4 +23,18 @@ public class Laboratorio {
     @Column(name = "capacidade", nullable = false)
     private int capacidade;
 
+    public Laboratorio(DTOLaboratorio laboratorioDTO) {
+        this.id_lab = laboratorioDTO.id();
+        this.nome_lab = laboratorioDTO.nome_lab();
+        this.capacidade = laboratorioDTO.capacidade();
+    }
+
+    public void atualizarInformacoes(DTOLaboratorio laboratorioAtualizar) {
+        if(laboratorioAtualizar.nome_lab() != null){
+            this.nome_lab = laboratorioAtualizar.nome_lab();
+        }
+        if(laboratorioAtualizar.capacidade() > 0){
+            this.capacidade = laboratorioAtualizar.capacidade();
+        }
+    }
 }
