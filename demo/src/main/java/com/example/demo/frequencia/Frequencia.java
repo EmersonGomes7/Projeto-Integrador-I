@@ -4,14 +4,11 @@ import com.example.demo.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.UUID;
 
 @Table(name = "Frequencia")
-@Entity(name = "frequencias")
+@Entity(name = "frequencia")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,14 +26,15 @@ public class Frequencia {
     @Column(name = "hora", nullable = false)
     private LocalTime hora;
 
-    @Column(name = "lab_frequencia", nullable = false)
-    private String lab_frequencia; // Vai ser uma string com a frequência das pessoas
+    @Column(name = "freq_alunos", nullable = false)
+    private String freq_alunos; // Presente / Faltou
 
-    @Column(name = "tipo_de_usua", nullable = false)
-    private String tipo_de_usua;
+    @Column(name = "presenca_alunos", nullable = false)
+    private String presenca_alunos;// Nome dos alunos
 
-    @OneToOne(cascade = CascadeType.ALL) // Checar
-    @JoinColumn(name = "id_usuario_prof", nullable = false)
-    private Usuario id_usuario_prof;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_usuario_prof")
+    private Usuario idUsuarioProf;
+
 
 }

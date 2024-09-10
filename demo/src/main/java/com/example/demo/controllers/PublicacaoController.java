@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/publicacao")
 public class PublicacaoController {
@@ -22,6 +24,8 @@ public class PublicacaoController {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private PublicacaoService publicacaoService;
+    @Autowired
+    private PublicacaoRepository publicacaoRepository;
 
     @PostMapping
     @Transactional
@@ -36,8 +40,9 @@ public class PublicacaoController {
 
         var publi = new Publicacao();
         publi.setRede_social(publicacaoDTO.rede_social());
+        publi.setDescricao(publicacaoDTO.descricao());
         publi.setData_publi(publicacaoDTO.data_publi());
-        publi.setId_usuario_criador(usuarioCriador); // Associa o usuário criador
+        publi.setIdUsuarioCriador(usuarioCriador); // Associa o usuário criador
 
         repository.save(publi);
 
@@ -50,7 +55,20 @@ public class PublicacaoController {
     public ResponseEntity<DTOPublicacao> buscarPublicacao(@PathVariable Long id) {
         Publicacao publicacao = repository.getReferenceById(id);
 
-        return ResponseEntity.ok(new DTOPublicacao(publicacao.getId_publi(), publicacao.getRede_social(), publicacao.getData_publi(), publicacao.getId_usuario_criador()));
+        return ResponseEntity.ok(new DTOPublicacao(publicacao.getId_publi(), publicacao.getRede_social(), publicacao.getDescricao(), publicacao.getData_publi(), publicacao.getIdUsuarioCriador()));
+    }
+
+    @GetMapping("/publicacoesUsuario")
+    public ResponseEntity<List<Publicacao>> buscarPublicacoesUsuario(@RequestParam Long id_usuario) {
+        var usuarioOptional = usuarioRepository.findById(id_usuario);
+
+        if (usuarioOptional.isEmpty()) { return ResponseEntity.badRequest().build(); }
+
+        var usuario = usuarioOptional.get();
+
+        List<Publicacao> publicacaoList = repository.findByIdUsuarioCriador(usuario);
+
+        return ResponseEntity.ok(publicacaoList);
     }
 
     @PutMapping

@@ -34,6 +34,6 @@ public class Producao {
 
     @ManyToOne
     @JoinColumn(name = "id_do_usuario", nullable = false)
-    private Usuario id_do_usuario;
+    private Usuario idUsuarioCriador;
 
 }

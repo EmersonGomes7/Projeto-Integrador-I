@@ -3,6 +3,7 @@ package com.example.demo.controllers;
 import com.example.demo.usuario.DTODadosUsuario;
 import com.example.demo.usuario.Usuario;
 import com.example.demo.usuario.UsuarioRepository;
+import com.example.demo.usuario.UsuarioService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioRepository repository;
+    @Autowired
+    private UsuarioService service;
 
 
     @PostMapping
@@ -49,7 +52,7 @@ public class UsuarioController {
     @Transactional
     public ResponseEntity<DTODadosUsuario> atualizar(@RequestBody @Valid DTODadosUsuario usuarioAtualizar){
          var usuario = repository.getReferenceById(usuarioAtualizar.id());
-         usuario.atualizarInformacoes(usuarioAtualizar);
+         service.atualizarInformacoes(usuario, usuarioAtualizar);
 
          return ResponseEntity.ok(new DTODadosUsuario(usuario));
     }

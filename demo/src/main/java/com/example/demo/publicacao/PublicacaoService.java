@@ -17,7 +17,7 @@ public class PublicacaoService {
 
     public Publicacao criarPublicacao(DTOPublicacao publicacaoDTO) {
         Usuario usuario = usuarioService.buscarUsuarioPorId(publicacaoDTO.id_usuario_criador());
-        return new Publicacao(publicacaoDTO.id_publi(), publicacaoDTO.rede_social(), publicacaoDTO.data_publi(), usuario);
+        return new Publicacao(publicacaoDTO.id_publi(), publicacaoDTO.rede_social(), publicacaoDTO.descricao(), publicacaoDTO.data_publi(), usuario);
     }
 
     public void atualizarPublicacao(Publicacao publicacao, DTOPublicacao publicacaoAtualizar) {
@@ -27,9 +27,12 @@ public class PublicacaoService {
         if (publicacaoAtualizar.data_publi() != null) {
             publicacao.setData_publi(publicacaoAtualizar.data_publi());
         }
+        if (publicacaoAtualizar.descricao() != null) {
+            publicacao.setDescricao(publicacaoAtualizar.descricao());
+        }
         if (publicacaoAtualizar.id_usuario_criador() != null) {
             Usuario usuario = usuarioService.buscarUsuarioPorId(publicacaoAtualizar.id_usuario_criador());
-            publicacao.setId_usuario_criador(usuario);
+            publicacao.setIdUsuarioCriador(usuario);
         }
     }
 }

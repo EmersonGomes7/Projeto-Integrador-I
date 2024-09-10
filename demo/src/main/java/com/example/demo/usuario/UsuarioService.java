@@ -19,4 +19,13 @@ public class UsuarioService {
         }
         return null;
     }
+
+    public void atualizarInformacoes(Usuario usuario, DTODadosUsuario dados) {
+        if (dados.nome() != null){
+            usuario.setNome_usuario(dados.nome());
+        }
+        if (dados.tipo_usuario() != null){
+            usuario.setTipo_usuario(dados.tipo_usuario());
+        }
+    }
 }

@@ -3,11 +3,11 @@ package com.example.demo.publicacao;
 import com.example.demo.usuario.Usuario;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 public record DTOPublicacao(
         Long id_publi,
         RedeSocial rede_social,
+        String descricao,
         LocalDate data_publi,
         Long id_usuario_criador
 ) {
@@ -16,16 +16,18 @@ public record DTOPublicacao(
         this(
                 publicacao.getId_publi(),
                 publicacao.getRede_social(),
+                publicacao.getDescricao(),
                 publicacao.getData_publi(),
-                publicacao.getId_usuario_criador().getId_usuario()
+                publicacao.getIdUsuarioCriador().getId_usuario()
         );
     }
 
 
-    public DTOPublicacao(Long idPubli, RedeSocial redeSocial, LocalDate dataPubli, Usuario idUsuarioCriador) {
+    public DTOPublicacao(Long idPubli, RedeSocial redeSocial, String descricao,LocalDate dataPubli, Usuario idUsuarioCriador) {
         this(
                 idPubli,
                 redeSocial,
+                descricao,
                 dataPubli,
                 idUsuarioCriador.getId_usuario()
         );

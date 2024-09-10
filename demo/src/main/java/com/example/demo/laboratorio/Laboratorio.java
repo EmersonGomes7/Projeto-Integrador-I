@@ -1,6 +1,6 @@
 package com.example.demo.laboratorio;
 
-import java.util.UUID;
+
 import jakarta.persistence.*;
 import lombok.*;
 

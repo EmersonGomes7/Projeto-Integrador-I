@@ -4,6 +4,7 @@ import com.example.demo.producao.DTOProducao;
 import com.example.demo.producao.Producao;
 import com.example.demo.producao.ProducaoRepository;
 import com.example.demo.producao.ProducaoService;
+import com.example.demo.usuario.Usuario;
 import com.example.demo.usuario.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -40,7 +42,7 @@ public class ProducaoController {
         producao.setDescricao(producaoDTO.descricao());
         producao.setData_publicacao(producaoDTO.data_publicacao());
         producao.setTipo_conteudo(producaoDTO.tipo_conteudo());
-        producao.setId_do_usuario(usuarioCriador);
+        producao.setIdUsuarioCriador(usuarioCriador);
 
         repository.save(producao);
 
@@ -57,6 +59,19 @@ public class ProducaoController {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(new DTOProducao(producao.orElse(null)));
+    }
+
+    @GetMapping("/producoesUsuario")
+    public ResponseEntity<List<Producao>> buscarProdutosUsuario(@RequestParam Long id_usuario){
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id_usuario);
+
+        if (usuarioOptional.isEmpty()) { return ResponseEntity.badRequest().build(); }
+
+        var usuario = usuarioOptional.get();
+
+        List<Producao> producaoList = repository.findByIdUsuarioCriador(usuario);
+
+        return ResponseEntity.ok(producaoList);
     }
 
     @PutMapping

@@ -29,7 +29,7 @@ public class ProducaoService {
         }
         if(producaoAtualizar.id_usuario_criador() != null){
             Usuario usuario = usuarioService.buscarUsuarioPorId(producaoAtualizar.id_usuario_criador());
-            producao.setId_do_usuario(usuario);
+            producao.setIdUsuarioCriador(usuario);
         }
     }
 }

@@ -1,9 +1,5 @@
 package com.example.demo.producao;
 
-import com.example.demo.producao.Producao;
-import com.example.demo.producao.TipoCont;
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDate;
 
 public record DTOProducao(
@@ -21,7 +17,7 @@ public record DTOProducao(
                 producao.getTitulo(),
                 producao.getDescricao(),
                 producao.getData_publicacao(),
-                producao.getId_do_usuario().getId_usuario()
+                producao.getIdUsuarioCriador().getId_usuario()
         );
     }
 }

@@ -1,6 +1,5 @@
 package com.example.demo.publicacao;
 
-import com.example.demo.usuario.UsuarioService;
 import com.example.demo.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,11 +23,14 @@ public class Publicacao {
     @Enumerated(EnumType.STRING)
     private RedeSocial rede_social;
 
+    @Column(name = "descricao", nullable = false)
+    private String descricao;
+
     @Column(name = "data_publi", nullable = false)
     private LocalDate data_publi;
 
     @OneToOne
     @JoinColumn(name = "id_usuario_criador", nullable = false)
-    private Usuario id_usuario_criador;
+    private Usuario idUsuarioCriador;
 
 }
