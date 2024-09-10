@@ -3,6 +3,7 @@ package com.example.demo.controllers;
 import com.example.demo.laboratorio.DTOLaboratorio;
 import com.example.demo.laboratorio.Laboratorio;
 import com.example.demo.laboratorio.LaboratorioRepository;
+import com.example.demo.laboratorio.LaboratorioService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ public class LaboratorioController {
 
     @Autowired
     private LaboratorioRepository repository;
+    @Autowired
+    private LaboratorioService service;
 
     @PostMapping
     @Transactional
@@ -48,7 +51,7 @@ public class LaboratorioController {
     @Transactional
     public ResponseEntity<DTOLaboratorio> atualizarLab(@RequestBody DTOLaboratorio laboratorioAtualizar){
         var lab = repository.getReferenceById(laboratorioAtualizar.id());
-        lab.atualizarInformacoes(laboratorioAtualizar);
+        service.atualizarInformacoes(lab, laboratorioAtualizar);
 
         return ResponseEntity.ok(new DTOLaboratorio(lab));
     }

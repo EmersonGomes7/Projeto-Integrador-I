@@ -27,13 +27,13 @@ public class Frequencia {
     private LocalTime hora;
 
     @Column(name = "freq_alunos", nullable = false)
-    private String freq_alunos; // Presente / Faltou
+    private String freq_alunos; // Nome dos alunos
 
     @Column(name = "presenca_alunos", nullable = false)
-    private String presenca_alunos;// Nome dos alunos
+    private String presenca_alunos;// Presente / Faltou
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_usuario_prof")
+    @OneToOne
+    @JoinColumn(name = "id_usuario_prof", nullable = false)
     private Usuario idUsuarioProf;
 
 

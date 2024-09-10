@@ -83,7 +83,6 @@ public class FrequenciaController {
         return ResponseEntity.ok(new DTOFrequencia(freq));
     }
 
-    // TODO: Essa função está com problemas, algo relacionado ao on delete cascade (eu acho)
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<DTOFrequencia> deletarFrequencia(@PathVariable Long id) {
