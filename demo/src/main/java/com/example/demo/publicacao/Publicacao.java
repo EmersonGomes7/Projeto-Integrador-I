@@ -3,6 +3,7 @@ package com.example.demo.publicacao;
 import com.example.demo.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
 
 import java.time.LocalDate;
 
@@ -29,7 +30,7 @@ public class Publicacao {
     @Column(name = "data_publi", nullable = false)
     private LocalDate data_publi;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_usuario_criador", nullable = false)
     private Usuario idUsuarioCriador;
 

@@ -41,6 +41,7 @@ public class FrequenciaController {
         frequencia.setPresenca_alunos(frequenciaDTO.tipo_de_usua());
         frequencia.setIdUsuarioProf(professor);
 
+        professor.setFrequencia(frequencia);
         repository.save(frequencia);
 
         var uri = uriBuilder.path("/frequencia/{id_frequencia}").buildAndExpand(frequencia.getId_frequencia()).toUri();

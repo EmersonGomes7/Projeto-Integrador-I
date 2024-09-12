@@ -32,7 +32,7 @@ public class Frequencia {
     @Column(name = "presenca_alunos", nullable = false)
     private String presenca_alunos;// Presente / Faltou
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_usuario_prof", nullable = false)
     private Usuario idUsuarioProf;
 

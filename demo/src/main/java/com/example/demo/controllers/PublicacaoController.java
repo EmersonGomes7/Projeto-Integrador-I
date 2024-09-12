@@ -44,6 +44,8 @@ public class PublicacaoController {
         publi.setData_publi(publicacaoDTO.data_publi());
         publi.setIdUsuarioCriador(usuarioCriador); // Associa o usuário criador
 
+        usuarioCriador.setPublicacao(publi);
+
         repository.save(publi);
 
         var uri = uriBuilder.path("/publicacao/{id_publi}").buildAndExpand(publi.getId_publi()).toUri();

@@ -44,6 +44,7 @@ public class ProducaoController {
         producao.setTipo_conteudo(producaoDTO.tipo_conteudo());
         producao.setIdUsuarioCriador(usuarioCriador);
 
+        usuarioCriador.setProducao(producao);
         repository.save(producao);
 
         var uri = uriBuilder.path("/producao/{id_producao}").buildAndExpand(producao.getId_producao()).toUri();
