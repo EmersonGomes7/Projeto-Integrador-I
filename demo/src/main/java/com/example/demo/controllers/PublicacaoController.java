@@ -24,8 +24,6 @@ public class PublicacaoController {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private PublicacaoService publicacaoService;
-    @Autowired
-    private PublicacaoRepository publicacaoRepository;
 
     @PostMapping
     @Transactional
@@ -33,7 +31,7 @@ public class PublicacaoController {
         // Checagem da existencia de um usuário
         var usuarioCriadorOptional = usuarioRepository.findById(publicacaoDTO.id_usuario_criador());
         if (usuarioCriadorOptional.isEmpty()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
 
         var usuarioCriador = usuarioCriadorOptional.get();
@@ -64,7 +62,7 @@ public class PublicacaoController {
     public ResponseEntity<List<Publicacao>> buscarPublicacoesUsuario(@RequestParam Long id_usuario) {
         var usuarioOptional = usuarioRepository.findById(id_usuario);
 
-        if (usuarioOptional.isEmpty()) { return ResponseEntity.badRequest().build(); }
+        if (usuarioOptional.isEmpty()) { return ResponseEntity.notFound().build(); }
 
         var usuario = usuarioOptional.get();
 
@@ -89,5 +87,6 @@ public class PublicacaoController {
 
         return ResponseEntity.noContent().build();
     }
+
 
 }

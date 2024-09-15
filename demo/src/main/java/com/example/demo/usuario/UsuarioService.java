@@ -24,6 +24,9 @@ public class UsuarioService {
         if (dados.nome() != null){
             usuario.setNome_usuario(dados.nome());
         }
+        if (dados.email() != null){
+            usuario.setEmail(dados.email());
+        }
         if (dados.tipo_usuario() != null){
             usuario.setTipo_usuario(dados.tipo_usuario());
         }

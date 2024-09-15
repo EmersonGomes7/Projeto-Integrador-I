@@ -18,7 +18,7 @@ public record DTOPublicacao(
                 publicacao.getRede_social(),
                 publicacao.getDescricao(),
                 publicacao.getData_publi(),
-                publicacao.getIdUsuarioCriador().getId_usuario()
+                publicacao.getIdUsuarioCriador().getIdUsuario()
         );
     }
 
@@ -29,7 +29,7 @@ public record DTOPublicacao(
                 redeSocial,
                 descricao,
                 dataPubli,
-                idUsuarioCriador.getId_usuario()
+                idUsuarioCriador.getIdUsuario()
         );
     }
 }

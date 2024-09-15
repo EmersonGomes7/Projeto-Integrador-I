@@ -30,7 +30,7 @@ public class FrequenciaController {
         // Checagem da existencia de um usuário
         var professorOptional = usuarioRepository.findById(frequenciaDTO.id_usuario_prof());
         if (professorOptional.isEmpty()){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
         var professor = professorOptional.get();
 
@@ -52,9 +52,7 @@ public class FrequenciaController {
     @GetMapping("/{id}")
     public ResponseEntity<DTOFrequencia> listarFrequencia(@PathVariable Long id) {
         var frequencia = repository.findById(id).orElse(null);
-
-        if (frequencia == null){ return ResponseEntity.notFound().build(); }
-
+// TODO: CKECK PARA NULIDADE
         return ResponseEntity.ok(new DTOFrequencia(frequencia.getId_frequencia(), frequencia.getData(), frequencia.getHora(), frequencia.getFreq_alunos(), frequencia.getPresenca_alunos(), frequencia.getIdUsuarioProf()));
     }
 
@@ -62,7 +60,7 @@ public class FrequenciaController {
     public ResponseEntity<List<Frequencia>> listarFrequenciaProfessor(@RequestParam Long idProfessor) {
         var professorOptional = usuarioRepository.findById(idProfessor);
         if (professorOptional.isEmpty()){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
 
         var professor = professorOptional.get();
@@ -78,10 +76,7 @@ public class FrequenciaController {
         var freq = repository.findById(frequenciaDTO.id()).orElse(null);
         frequenciaService.AtualizarFrequencia(freq, frequenciaDTO);
 
-        if(freq == null){
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(new DTOFrequencia(freq));
+        return ResponseEntity.ok(new DTOFrequencia(freq));// TODO: CKECK PARA NULIDADE
     }
 
     @DeleteMapping("/{id}")

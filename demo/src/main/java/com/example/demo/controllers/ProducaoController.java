@@ -53,20 +53,22 @@ public class ProducaoController {
     }
 
     @GetMapping("/{id}")
-    public  ResponseEntity<DTOProducao> buscarProducao(@PathVariable Long id){
+    public ResponseEntity<DTOProducao> buscarProducao(@PathVariable Long id) {
         Optional<Producao> producao = repository.findById(id);
 
         if (producao.isEmpty()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(new DTOProducao(producao.orElse(null)));
     }
 
     @GetMapping("/producoesUsuario")
-    public ResponseEntity<List<Producao>> buscarProdutosUsuario(@RequestParam Long id_usuario){
+    public ResponseEntity<List<Producao>> buscarProdutosUsuario(@RequestParam Long id_usuario) {
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(id_usuario);
 
-        if (usuarioOptional.isEmpty()) { return ResponseEntity.badRequest().build(); }
+        if (usuarioOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
         var usuario = usuarioOptional.get();
 
@@ -81,19 +83,18 @@ public class ProducaoController {
         var producao = repository.findById(producaoAtualizar.id_producao()).orElse(null);
         producaoService.atualizarProducao(producao, producaoAtualizar);
 
-        if (producao != null) {
-            return ResponseEntity.ok(new DTOProducao(producao));
-        }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(new DTOProducao(producao)); // TODO: CKECK PARA NULIDADE
+
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<DTOProducao> deletarProducao(@PathVariable Long id){
+    public ResponseEntity<DTOProducao> deletarProducao(@PathVariable Long id) {
         repository.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }
+
 }
 
 

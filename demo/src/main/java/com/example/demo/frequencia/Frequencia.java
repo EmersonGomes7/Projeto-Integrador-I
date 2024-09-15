@@ -36,5 +36,4 @@ public class Frequencia {
     @JoinColumn(name = "id_usuario_prof", nullable = false)
     private Usuario idUsuarioProf;
 
-
 }

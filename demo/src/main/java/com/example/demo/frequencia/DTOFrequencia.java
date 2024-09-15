@@ -21,7 +21,7 @@ public record DTOFrequencia(
                 frequencia.getHora(),
                 frequencia.getFreq_alunos(),
                 frequencia.getPresenca_alunos(),
-                frequencia.getIdUsuarioProf().getId_usuario()
+                frequencia.getIdUsuarioProf().getIdUsuario()
         );
     }
 
@@ -32,7 +32,7 @@ public record DTOFrequencia(
                 hora,
                 labFrequencia,
                 tipoDeUsua,
-                idUsuarioProf.getId_usuario()
+                idUsuarioProf.getIdUsuario()
         );
     }
 }

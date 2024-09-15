@@ -29,7 +29,7 @@ public class UsuarioController {
         var usuario = new Usuario(usuarioDTO);
         repository.save(usuario);
 
-        var uri = uriBuilder.path("/usuario/{id_publi}").buildAndExpand(usuario.getId_usuario()).toUri();
+        var uri = uriBuilder.path("/usuario/{id_publi}").buildAndExpand(usuario.getIdUsuario()).toUri();
 
         return ResponseEntity.created(uri).body(new DTODadosUsuario(usuario));
     }
@@ -51,10 +51,10 @@ public class UsuarioController {
     @PutMapping
     @Transactional
     public ResponseEntity<DTODadosUsuario> atualizar(@RequestBody @Valid DTODadosUsuario usuarioAtualizar){
-         var usuario = repository.getReferenceById(usuarioAtualizar.id());
-         service.atualizarInformacoes(usuario, usuarioAtualizar);
+        var usuario = repository.getReferenceById(usuarioAtualizar.id());
+        service.atualizarInformacoes(usuario, usuarioAtualizar);
 
-         return ResponseEntity.ok(new DTODadosUsuario(usuario));
+        return ResponseEntity.ok(new DTODadosUsuario(usuario));
     }
 
 

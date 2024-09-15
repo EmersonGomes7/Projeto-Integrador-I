@@ -17,7 +17,7 @@ public record DTOProducao(
                 producao.getTitulo(),
                 producao.getDescricao(),
                 producao.getData_publicacao(),
-                producao.getIdUsuarioCriador().getId_usuario()
+                producao.getIdUsuarioCriador().getIdUsuario()
         );
     }
 }

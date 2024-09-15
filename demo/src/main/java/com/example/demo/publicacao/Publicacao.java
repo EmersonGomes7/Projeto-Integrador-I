@@ -3,7 +3,6 @@ package com.example.demo.publicacao;
 import com.example.demo.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
 
 import java.time.LocalDate;
 
