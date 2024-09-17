@@ -5,6 +5,7 @@ import com.example.demo.frequencia.Frequencia;
 import com.example.demo.frequencia.FrequenciaRepository;
 import com.example.demo.frequencia.FrequenciaService;
 import com.example.demo.usuario.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +29,7 @@ public class FrequenciaController {
     @Transactional
     public ResponseEntity<DTOFrequencia> criarFrequencia(@RequestBody DTOFrequencia frequenciaDTO, UriComponentsBuilder uriBuilder) {
         // Checagem da existencia de um usuário
-        var professorOptional = usuarioRepository.findById(frequenciaDTO.id_usuario_prof());
-        if (professorOptional.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
-        var professor = professorOptional.get();
+        var professor = usuarioRepository.findById(frequenciaDTO.id_usuario_prof()).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
         var frequencia = new Frequencia();
         frequencia.setData(frequenciaDTO.data());
@@ -51,19 +48,14 @@ public class FrequenciaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DTOFrequencia> listarFrequencia(@PathVariable Long id) {
-        var frequencia = repository.findById(id).orElse(null);
-// TODO: CKECK PARA NULIDADE
+        var frequencia = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Frequência não encontrada"));
+
         return ResponseEntity.ok(new DTOFrequencia(frequencia.getId_frequencia(), frequencia.getData(), frequencia.getHora(), frequencia.getFreq_alunos(), frequencia.getPresenca_alunos(), frequencia.getIdUsuarioProf()));
     }
 
     @GetMapping("/frequenciasProfessor")
     public ResponseEntity<List<Frequencia>> listarFrequenciaProfessor(@RequestParam Long idProfessor) {
-        var professorOptional = usuarioRepository.findById(idProfessor);
-        if (professorOptional.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
-
-        var professor = professorOptional.get();
+        var professor = usuarioRepository.findById(idProfessor).orElseThrow(() -> new EntityNotFoundException("Professor não encontrada"));
 
         List<Frequencia> frequenciaList = repository.findByIdUsuarioProf(professor);
 
@@ -73,15 +65,16 @@ public class FrequenciaController {
     @PutMapping
     @Transactional
     public ResponseEntity<DTOFrequencia> atualizarFreq(@RequestBody DTOFrequencia frequenciaDTO) {
-        var freq = repository.findById(frequenciaDTO.id()).orElse(null);
+        var freq = repository.findById(frequenciaDTO.id()).orElseThrow(() -> new EntityNotFoundException("Frequência não encontrada"));
         frequenciaService.AtualizarFrequencia(freq, frequenciaDTO);
 
-        return ResponseEntity.ok(new DTOFrequencia(freq));// TODO: CKECK PARA NULIDADE
+        return ResponseEntity.ok(new DTOFrequencia(freq));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<DTOFrequencia> deletarFrequencia(@PathVariable Long id) {
+        var frequecia = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Frequência não encontrada"));
         repository.deleteById(id);
 
         return ResponseEntity.noContent().build();

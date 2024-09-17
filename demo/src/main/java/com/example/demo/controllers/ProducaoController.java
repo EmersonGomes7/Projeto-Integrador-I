@@ -4,8 +4,8 @@ import com.example.demo.producao.DTOProducao;
 import com.example.demo.producao.Producao;
 import com.example.demo.producao.ProducaoRepository;
 import com.example.demo.producao.ProducaoService;
-import com.example.demo.usuario.Usuario;
 import com.example.demo.usuario.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/producao")
@@ -30,12 +29,7 @@ public class ProducaoController {
     @PostMapping
     @Transactional
     public ResponseEntity<DTOProducao> producaoCadastro(@RequestBody @Valid DTOProducao producaoDTO, UriComponentsBuilder uriBuilder) {
-        var usuarioCriadorOptional = usuarioRepository.findById(producaoDTO.id_usuario_criador());
-        if (usuarioCriadorOptional.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        var usuarioCriador = usuarioCriadorOptional.get();
+        var usuarioCriador = usuarioRepository.findById(producaoDTO.id_usuario_criador()).orElseThrow(() -> new EntityNotFoundException("Usuário criador da produção não encontrada"));
 
         var producao = new Producao();
         producao.setTitulo(producaoDTO.titulo());
@@ -54,23 +48,14 @@ public class ProducaoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DTOProducao> buscarProducao(@PathVariable Long id) {
-        Optional<Producao> producao = repository.findById(id);
+        var producao = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Produção não encontrada"));
 
-        if (producao.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(new DTOProducao(producao.orElse(null)));
+        return ResponseEntity.ok(new DTOProducao(producao));
     }
 
     @GetMapping("/producoesUsuario")
     public ResponseEntity<List<Producao>> buscarProdutosUsuario(@RequestParam Long id_usuario) {
-        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id_usuario);
-
-        if (usuarioOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        var usuario = usuarioOptional.get();
+        var usuario = usuarioRepository.findById(id_usuario).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrada"));
 
         List<Producao> producaoList = repository.findByIdUsuarioCriador(usuario);
 
@@ -80,16 +65,17 @@ public class ProducaoController {
     @PutMapping
     @Transactional
     public ResponseEntity<DTOProducao> atualizarProducao(@RequestBody @Valid DTOProducao producaoAtualizar) {
-        var producao = repository.findById(producaoAtualizar.id_producao()).orElse(null);
+        var producao = repository.findById(producaoAtualizar.id_producao()).orElseThrow(() -> new EntityNotFoundException("Produção não encontrada"));
         producaoService.atualizarProducao(producao, producaoAtualizar);
 
-        return ResponseEntity.ok(new DTOProducao(producao)); // TODO: CKECK PARA NULIDADE
+        return ResponseEntity.ok(new DTOProducao(producao));
 
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<DTOProducao> deletarProducao(@PathVariable Long id) {
+        var producao = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Produção não encontrada"));
         repository.deleteById(id);
 
         return ResponseEntity.noContent().build();

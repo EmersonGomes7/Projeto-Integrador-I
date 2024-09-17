@@ -5,6 +5,7 @@ import com.example.demo.publicacao.Publicacao;
 import com.example.demo.publicacao.PublicacaoRepository;
 import com.example.demo.publicacao.PublicacaoService;
 import com.example.demo.usuario.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +30,7 @@ public class PublicacaoController {
     @Transactional
     public ResponseEntity<DTOPublicacao> publicacaoCadastro(@RequestBody @Valid DTOPublicacao publicacaoDTO, UriComponentsBuilder uriBuilder) {
         // Checagem da existencia de um usuário
-        var usuarioCriadorOptional = usuarioRepository.findById(publicacaoDTO.id_usuario_criador());
-        if (usuarioCriadorOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        var usuarioCriador = usuarioCriadorOptional.get();
+        var usuarioCriador = usuarioRepository.findById(publicacaoDTO.id_usuario_criador()).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
         var publi = new Publicacao();
         publi.setRede_social(publicacaoDTO.rede_social());
@@ -53,18 +49,15 @@ public class PublicacaoController {
 
     @GetMapping("{id}")
     public ResponseEntity<DTOPublicacao> buscarPublicacao(@PathVariable Long id) {
-        Publicacao publicacao = repository.getReferenceById(id);
+        Publicacao publicacao = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Publicação não encontrada"));
+
 
         return ResponseEntity.ok(new DTOPublicacao(publicacao.getId_publi(), publicacao.getRede_social(), publicacao.getDescricao(), publicacao.getData_publi(), publicacao.getIdUsuarioCriador()));
     }
 
     @GetMapping("/publicacoesUsuario")
     public ResponseEntity<List<Publicacao>> buscarPublicacoesUsuario(@RequestParam Long id_usuario) {
-        var usuarioOptional = usuarioRepository.findById(id_usuario);
-
-        if (usuarioOptional.isEmpty()) { return ResponseEntity.notFound().build(); }
-
-        var usuario = usuarioOptional.get();
+        var usuario = usuarioRepository.findById(id_usuario).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
         List<Publicacao> publicacaoList = repository.findByIdUsuarioCriador(usuario);
 
@@ -74,7 +67,7 @@ public class PublicacaoController {
     @PutMapping
     @Transactional
     public ResponseEntity<DTOPublicacao> atualizarPubli(@RequestBody @Valid DTOPublicacao publicacaoAtualizar) {
-        var publi = repository.getReferenceById(publicacaoAtualizar.id_publi());
+        var publi = repository.findById(publicacaoAtualizar.id_publi()).orElseThrow(() -> new EntityNotFoundException("Reserva não encontrada"));
         publicacaoService.atualizarPublicacao(publi, publicacaoAtualizar);
 
         return ResponseEntity.ok(new DTOPublicacao(publi));
@@ -83,6 +76,7 @@ public class PublicacaoController {
     @DeleteMapping("{id}")
     @Transactional
     public ResponseEntity<DTOPublicacao> deletarPubli(@PathVariable Long id) {
+        var publicacao = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Publicação não encontrada"));
         repository.deleteById(id);
 
         return ResponseEntity.noContent().build();

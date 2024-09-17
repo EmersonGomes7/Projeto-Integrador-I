@@ -4,6 +4,7 @@ import com.example.demo.usuario.DTODadosUsuario;
 import com.example.demo.usuario.Usuario;
 import com.example.demo.usuario.UsuarioRepository;
 import com.example.demo.usuario.UsuarioService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DTODadosUsuario> buscarUsuarioPorId(@PathVariable Long id){
-        var usuario = repository.getReferenceById(id);
+        var usuario = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
         return ResponseEntity.ok(new DTODadosUsuario(usuario));
     }
@@ -51,7 +52,7 @@ public class UsuarioController {
     @PutMapping
     @Transactional
     public ResponseEntity<DTODadosUsuario> atualizar(@RequestBody @Valid DTODadosUsuario usuarioAtualizar){
-        var usuario = repository.getReferenceById(usuarioAtualizar.id());
+        var usuario = repository.findById(usuarioAtualizar.id()).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
         service.atualizarInformacoes(usuario, usuarioAtualizar);
 
         return ResponseEntity.ok(new DTODadosUsuario(usuario));
@@ -61,6 +62,7 @@ public class UsuarioController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<DTODadosUsuario> deletarUsuario(@PathVariable Long id){
+        var usuario = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
         repository.deleteById(id);
 
         return ResponseEntity.noContent().build();

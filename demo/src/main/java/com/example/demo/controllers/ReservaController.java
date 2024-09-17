@@ -34,24 +34,28 @@ public class ReservaController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<DTOReservaLab> criarReserva(@RequestBody @Valid DTOReservaLab dtoReservaLab, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<?> criarReserva(@RequestBody @Valid DTOReservaLab dtoReservaLab, UriComponentsBuilder uriBuilder) {
+        try {
+            var reserva = laboratorioService.reservarLaboratorio(
+                    dtoReservaLab.id_lab_reservado(),
+                    dtoReservaLab.id_solicitante(),
+                    dtoReservaLab.data_inicio(),
+                    dtoReservaLab.data_fim(),
+                    dtoReservaLab.motivo_reserva(),
+                    dtoReservaLab.hora_inicio(),
+                    dtoReservaLab.hora_fim(),
+                    dtoReservaLab.lab_frequencia()
+            );
 
-        var reserva = laboratorioService.reservarLaboratorio(
-                dtoReservaLab.id_lab_reservado(),
-                dtoReservaLab.id_solicitante(),
-                dtoReservaLab.data_inicio(),
-                dtoReservaLab.data_fim(),
-                dtoReservaLab.motivo_reserva(),
-                dtoReservaLab.hora_inicio(),
-                dtoReservaLab.hora_fim(),
-                dtoReservaLab.lab_frequencia()
-        );
+            var uri = uriBuilder.path("/reserva-lab/{id_reserva}").buildAndExpand(reserva.getId_reserva()).toUri();
 
-        var uri = uriBuilder.path("/reserva-lab/{id_reserva}").buildAndExpand(reserva.getId_reserva()).toUri();
+            return ResponseEntity.created(uri).body(new DTOReservaLab(reserva));
 
-        return ResponseEntity.created(uri).body(new DTOReservaLab(reserva));
-
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<DTOReservaLab> buscarReservaID(@PathVariable Long id){
@@ -102,6 +106,7 @@ public class ReservaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<DTOReservaLab> excluirReserva(@PathVariable Long id){
+        var reserva = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Reserva não encontrada"));
         repository.deleteById(id);
 
         return ResponseEntity.noContent().build();

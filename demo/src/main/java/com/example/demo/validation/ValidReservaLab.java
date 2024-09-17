@@ -7,7 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ ElementType.TYPE })  // A anotação será usada em nível de classe
+@Target({ ElementType.TYPE })  // A anotação será usada em nivel de classe
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = ReservaLabValidator.class)  // Validador que implementará a lógica
 public @interface ValidReservaLab {

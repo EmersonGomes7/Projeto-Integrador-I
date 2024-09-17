@@ -5,6 +5,7 @@ import com.example.demo.usuario_reserva_lab.DTOReservaLab;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class ReservaLabValidator implements ConstraintValidator<ValidReservaLab, DTOReservaLab> {
@@ -31,6 +32,23 @@ public class ReservaLabValidator implements ConstraintValidator<ValidReservaLab,
                     .addPropertyNode("hora_fim")
                     .addConstraintViolation();
             return false;
+        }
+
+        // Set hora_inicio and hora_fim based on the current time
+        LocalDateTime agora = LocalDateTime.now();
+        LocalDate dataAtual = agora.toLocalDate();
+        LocalTime horaValida = LocalTime.now().plusHours(1);
+
+        if (reservaLab.data_inicio().isEqual(dataAtual)) {
+            // Se a reserva for para o dia atual ela deve ser feita com no mínimo uma hora de antecedência
+            if(horaInicio.isBefore(horaValida)){
+                // Exceção
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate("A hora de inicio deve ser pelo menos 1 hora depois da hora atual")
+                        .addPropertyNode("hora_fim")
+                        .addConstraintViolation();
+                return false;
+            }
         }
 
         // Se tudo estiver certo, retorna true

@@ -4,6 +4,7 @@ import com.example.demo.laboratorio.DTOLaboratorio;
 import com.example.demo.laboratorio.Laboratorio;
 import com.example.demo.laboratorio.LaboratorioRepository;
 import com.example.demo.laboratorio.LaboratorioService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class LaboratorioController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DTOLaboratorio> buscarLaboratorio(@PathVariable Long id){
-        var laboratorio = repository.getReferenceById(id);
+        var laboratorio = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Laboratório não encontrado"));
 
         return ResponseEntity.ok(new DTOLaboratorio(laboratorio));
     }
@@ -50,7 +51,7 @@ public class LaboratorioController {
     @PutMapping
     @Transactional
     public ResponseEntity<DTOLaboratorio> atualizarLab(@RequestBody DTOLaboratorio laboratorioAtualizar){
-        var lab = repository.getReferenceById(laboratorioAtualizar.id());
+        var lab = repository.findById(laboratorioAtualizar.id()).orElseThrow(() -> new EntityNotFoundException("Laboratório não encontrado"));
         service.atualizarInformacoes(lab, laboratorioAtualizar);
 
         return ResponseEntity.ok(new DTOLaboratorio(lab));
@@ -59,6 +60,7 @@ public class LaboratorioController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<DTOLaboratorio> deletarLaboratorio(@PathVariable Long id){
+        var laboratorio = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Laboratório não encontrado"));
         repository.deleteById(id);
 
         return ResponseEntity.noContent().build();

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Service
 public class LaboratorioService {
@@ -34,6 +35,7 @@ public class LaboratorioService {
         }
     }
 
+
     public void atualizarStatusReserva(Laboratorio laboratorio, Usuario_reserva_lab reserva){
         if(LocalDate.now().isAfter(reserva.getData_inicio()) && LocalDate.now().isBefore(reserva.getData_fim())){
             laboratorio.setStatus_reserva(Status.RESERVADO);
@@ -43,10 +45,22 @@ public class LaboratorioService {
     }
 
     @Transactional
-    public Usuario_reserva_lab reservarLaboratorio(Long laboratorioId, Long usuarioId, LocalDate dataInico, LocalDate dataFim, String motivoReserva, LocalTime horaInicio, LocalTime horaFim, String lab_frequencia){
-        Laboratorio laboratorio = laboratorioRepository.findById(laboratorioId).orElseThrow(() -> new EntityNotFoundException("Laboratório não encontrado"));
-        Usuario solicitante = usuarioRepository.findById(usuarioId).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+    public Usuario_reserva_lab reservarLaboratorio(Long laboratorioId, Long usuarioId, LocalDate dataInico, LocalDate dataFim,
+                                                   String motivoReserva, LocalTime horaInicio, LocalTime horaFim, String lab_frequencia) {
+        Laboratorio laboratorio = laboratorioRepository.findById(laboratorioId)
+                .orElseThrow(() -> new EntityNotFoundException("Laboratório não encontrado"));
+        Usuario solicitante = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
+        // Verifica se existe algum conflito de reservas
+        List<Usuario_reserva_lab> reservasConflitantes = reservaRepository.findReservasConflitantes(
+                laboratorioId, dataInico, dataFim, horaInicio, horaFim);
+
+        if (!reservasConflitantes.isEmpty()) {
+            throw new IllegalStateException("O laboratório já está reservado nesse período.");
+        }
+
+        // Criação da nova reserva
         Usuario_reserva_lab reserva = new Usuario_reserva_lab();
         reserva.setData_reserva(LocalDate.now());
         reserva.setData_inicio(dataInico);
@@ -58,6 +72,7 @@ public class LaboratorioService {
         reserva.setIdSolicitante(solicitante);
         reserva.setId_lab_reservado(laboratorio);
 
+        // Atualiza o status do laboratório
         atualizarStatusReserva(laboratorio, reserva);
 
         reservaRepository.save(reserva);
@@ -65,5 +80,6 @@ public class LaboratorioService {
 
         return reserva;
     }
+
 
 }

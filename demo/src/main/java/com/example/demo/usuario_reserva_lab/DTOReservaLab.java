@@ -1,7 +1,7 @@
 package com.example.demo.usuario_reserva_lab;
 
 import com.example.demo.validation.ValidReservaLab;
-import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -10,9 +10,9 @@ import java.time.LocalTime;
 public record DTOReservaLab(
         Long id,
         LocalDate data_reserva,
-        @Future
+        @FutureOrPresent
         LocalDate data_inicio,
-        @Future
+        @FutureOrPresent
         LocalDate data_fim,
         LocalTime hora_inicio,
         LocalTime hora_fim,
@@ -21,6 +21,8 @@ public record DTOReservaLab(
         Long id_solicitante,
         Long id_lab_reservado
 ) {
+        
+
 
         public DTOReservaLab(Usuario_reserva_lab reserva) {
                 this(
