@@ -35,14 +35,17 @@ public class Usuario {
     private String email;
 
 
+    @JsonIgnore
     @OneToMany(mappedBy = "idUsuarioCriador", cascade = CascadeType.REMOVE) // Produções associadas
-    private List<Producao> producoes;//Lista duplamente encadeada
+    private List<Producao> producoes;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "idUsuarioCriador", cascade = CascadeType.REMOVE) // Publicações associadas
-    private List<Publicacao> publicacao;//Lista duplamente encadeada
+    private List<Publicacao> publicacao;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "idUsuarioProf", cascade = CascadeType.REMOVE) // Frequências associadas
-    private List<Frequencia> frequencia;//Lista duplamente encadeada
+    private List<Frequencia> frequencia;
 
     @JsonIgnore
     @OneToOne(mappedBy = "idSolicitante", cascade = CascadeType.REMOVE)

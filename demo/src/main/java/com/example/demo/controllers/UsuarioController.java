@@ -12,7 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/usuario")
@@ -30,14 +31,16 @@ public class UsuarioController {
         var usuario = new Usuario(usuarioDTO);
         repository.save(usuario);
 
-        var uri = uriBuilder.path("/usuario/{id_publi}").buildAndExpand(usuario.getIdUsuario()).toUri();
+        var uri = uriBuilder.path("/usuario/{idUsuario}").buildAndExpand(usuario.getIdUsuario()).toUri();
 
         return ResponseEntity.created(uri).body(new DTODadosUsuario(usuario));
     }
 
     @GetMapping
-    public ResponseEntity<List<DTODadosUsuario>> listarUsuario(){
-        var lista = repository.findAll().stream().map(DTODadosUsuario::new).toList();
+    public ResponseEntity<LinkedList<DTODadosUsuario>> listarUsuario(){
+        var lista = repository.findAll().stream()
+                .map(DTODadosUsuario::new)
+                .collect(Collectors.toCollection(LinkedList::new));
 
         return ResponseEntity.ok(lista);
     }

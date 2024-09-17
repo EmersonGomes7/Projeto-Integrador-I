@@ -28,6 +28,7 @@ public class TratamentoDeErros {
             this(erro.getField(), erro.getDefaultMessage());
         }
     }
+
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<?> illegalState(IllegalStateException ex){
         var errors = ex.getMessage();

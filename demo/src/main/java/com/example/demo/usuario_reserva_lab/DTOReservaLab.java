@@ -38,4 +38,5 @@ public record DTOReservaLab(
                         reserva.getId_lab_reservado().getId_lab()
                 );
         }
+
 }

@@ -13,7 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/publicacao")
@@ -47,7 +48,7 @@ public class PublicacaoController {
         return ResponseEntity.created(uri).body(new DTOPublicacao(publi));
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<DTOPublicacao> buscarPublicacao(@PathVariable Long id) {
         Publicacao publicacao = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Publicação não encontrada"));
 
@@ -56,10 +57,12 @@ public class PublicacaoController {
     }
 
     @GetMapping("/publicacoesUsuario")
-    public ResponseEntity<List<Publicacao>> buscarPublicacoesUsuario(@RequestParam Long id_usuario) {
+    public ResponseEntity<LinkedList<DTOPublicacao>> buscarPublicacoesUsuario(@RequestParam Long id_usuario) {
         var usuario = usuarioRepository.findById(id_usuario).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
-        List<Publicacao> publicacaoList = repository.findByIdUsuarioCriador(usuario);
+        var publicacaoList = repository.findByIdUsuarioCriador(usuario).stream()
+                .map(DTOPublicacao::new)
+                .collect(Collectors.toCollection(LinkedList::new));
 
         return ResponseEntity.ok(publicacaoList);
     }

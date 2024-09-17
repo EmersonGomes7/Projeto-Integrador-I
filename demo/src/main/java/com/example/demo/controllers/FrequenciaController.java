@@ -12,7 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/frequencia")
@@ -54,10 +55,12 @@ public class FrequenciaController {
     }
 
     @GetMapping("/frequenciasProfessor")
-    public ResponseEntity<List<Frequencia>> listarFrequenciaProfessor(@RequestParam Long idProfessor) {
+    public ResponseEntity<LinkedList<DTOFrequencia>> listarFrequenciaProfessor(@RequestParam Long idProfessor) {
         var professor = usuarioRepository.findById(idProfessor).orElseThrow(() -> new EntityNotFoundException("Professor não encontrada"));
 
-        List<Frequencia> frequenciaList = repository.findByIdUsuarioProf(professor);
+        var frequenciaList = repository.findByIdUsuarioProf(professor).stream()
+                .map(DTOFrequencia::new)
+                .collect(Collectors.toCollection(LinkedList::new));
 
         return ResponseEntity.ok(frequenciaList);
     }

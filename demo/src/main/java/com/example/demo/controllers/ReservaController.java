@@ -6,7 +6,6 @@ import com.example.demo.usuario.UsuarioRepository;
 import com.example.demo.usuario_reserva_lab.DTOReservaLab;
 import com.example.demo.usuario_reserva_lab.ReservaRepository;
 import com.example.demo.usuario_reserva_lab.ReservaService;
-import com.example.demo.usuario_reserva_lab.Usuario_reserva_lab;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -15,7 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/reserva-lab")
@@ -65,17 +65,22 @@ public class ReservaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DTOReservaLab>> buscarTodasReserva(){
-        var reserva = repository.findAll().stream().map(DTOReservaLab::new).toList();
+    public ResponseEntity<LinkedList<DTOReservaLab>> buscarTodasReserva(){
+        var reserva = repository.findAll().stream()
+                .map(DTOReservaLab::new)
+                .collect(Collectors.toCollection(LinkedList::new));
+
 
         return ResponseEntity.ok(reserva);
     }
 
     @GetMapping("/reservas-laboratorio")
-    public ResponseEntity<List<Usuario_reserva_lab>> buscarReservaLaboratorio(@RequestParam Long id_lab){
+    public ResponseEntity<LinkedList<DTOReservaLab>> buscarReservaLaboratorio(@RequestParam Long id_lab){
         var laboratorio = laboratorioRepository.findById(id_lab).orElseThrow(() -> new EntityNotFoundException("Laboratório não encontrado"));
 
-        List<Usuario_reserva_lab> reservasList = repository.findReservasAtivasByLaboratorio(laboratorio.getId_lab());
+        LinkedList<DTOReservaLab> reservasList = repository.findReservasAtivasByLaboratorio(laboratorio.getId_lab()).stream()
+                .map(DTOReservaLab::new)
+                .collect(Collectors.toCollection(LinkedList::new)).reversed();
 
         if(reservasList.isEmpty()){
             return ResponseEntity.notFound().build();
@@ -85,10 +90,12 @@ public class ReservaController {
     }
 
     @GetMapping("/reservas-usuario")
-    public ResponseEntity<List<Usuario_reserva_lab>> buscarReservasUsuario(@RequestParam Long id_usuario){
+    public ResponseEntity<LinkedList<DTOReservaLab>> buscarReservasUsuario(@RequestParam Long id_usuario){
         var usuario = usuarioRepository.findById(id_usuario).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
-        var reservasList = repository.findByIdSolicitante_Id(usuario.getIdUsuario());
+        var reservasList = repository.findByIdSolicitante_Id(usuario.getIdUsuario()).stream()
+                .map(DTOReservaLab::new)
+                .collect(Collectors.toCollection(LinkedList::new));
 
         if(reservasList.isEmpty()){ return ResponseEntity.notFound().build(); }
 

@@ -33,7 +33,7 @@ public class Laboratorio {
 
     @JsonIgnore
     @OneToMany(mappedBy = "id_lab_reservado", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Usuario_reserva_lab> resevaLab; //Lista duplamente encadeada
+    private List<Usuario_reserva_lab> resevaLab;
 
     public Laboratorio(DTOLaboratorio laboratorioDTO) {
         this.id_lab = laboratorioDTO.id();

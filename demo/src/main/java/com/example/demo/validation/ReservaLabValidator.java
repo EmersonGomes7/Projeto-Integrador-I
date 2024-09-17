@@ -44,7 +44,7 @@ public class ReservaLabValidator implements ConstraintValidator<ValidReservaLab,
             if(horaInicio.isBefore(horaValida)){
                 // Exceção
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate("A hora de inicio deve ser pelo menos 1 hora depois da hora atual")
+                context.buildConstraintViolationWithTemplate("A hora de inicio deve ser pelo menos 1 hora antes da hora atual")
                         .addPropertyNode("hora_fim")
                         .addConstraintViolation();
                 return false;

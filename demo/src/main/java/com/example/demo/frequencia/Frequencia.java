@@ -1,6 +1,7 @@
 package com.example.demo.frequencia;
 
 import com.example.demo.usuario.Usuario;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,6 +33,7 @@ public class Frequencia {
     @Column(name = "presenca_alunos", nullable = false)
     private String presenca_alunos;// Presente / Faltou
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_usuario_prof", nullable = false)
     private Usuario idUsuarioProf;

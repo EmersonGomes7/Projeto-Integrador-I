@@ -13,7 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/producao")
@@ -54,10 +55,12 @@ public class ProducaoController {
     }
 
     @GetMapping("/producoesUsuario")
-    public ResponseEntity<List<Producao>> buscarProdutosUsuario(@RequestParam Long id_usuario) {
+    public ResponseEntity<LinkedList<DTOProducao>> buscarProdutosUsuario(@RequestParam Long id_usuario) {
         var usuario = usuarioRepository.findById(id_usuario).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrada"));
 
-        List<Producao> producaoList = repository.findByIdUsuarioCriador(usuario);
+        var producaoList = repository.findByIdUsuarioCriador(usuario).stream()
+                .map(DTOProducao::new)
+                .collect(Collectors.toCollection(LinkedList::new));
 
         return ResponseEntity.ok(producaoList);
     }

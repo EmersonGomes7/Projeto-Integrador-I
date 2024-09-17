@@ -12,7 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/laboratorio")
@@ -35,8 +36,10 @@ public class LaboratorioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DTOLaboratorio>> listarLaboratorios(){
-        var laboratorios = repository.findAll().stream().map(DTOLaboratorio::new).toList();
+    public ResponseEntity<LinkedList<DTOLaboratorio>> listarLaboratorios(){
+        var laboratorios = repository.findAll().stream()
+                .map(DTOLaboratorio::new)
+                .collect(Collectors.toCollection(LinkedList::new));
 
         return ResponseEntity.ok(laboratorios);
     }
