@@ -25,7 +25,7 @@ public class Usuario {
     private Long idUsuario;
 
     @Column(name = "nome", nullable = false)
-    private String nome_usuario;
+    private String nomeUsuario;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -53,7 +53,7 @@ public class Usuario {
 
     public Usuario(DTODadosUsuario usuarioDTO) {
         this.idUsuario = usuarioDTO.id();
-        this.nome_usuario = usuarioDTO.nome();
+        this.nomeUsuario = usuarioDTO.nome();
         this.tipo_usuario = usuarioDTO.tipo_usuario();
     }
 

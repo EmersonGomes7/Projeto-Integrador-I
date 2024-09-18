@@ -13,7 +13,7 @@ public record DTODadosUsuario(
     public DTODadosUsuario(Usuario usuario){
         this(
                 usuario.getIdUsuario(),
-                usuario.getNome_usuario(),
+                usuario.getNomeUsuario(),
                 usuario.getTipo_usuario(),
                 usuario.getEmail()
         );

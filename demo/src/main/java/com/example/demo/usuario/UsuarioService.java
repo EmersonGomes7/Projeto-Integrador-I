@@ -1,7 +1,10 @@
 package com.example.demo.usuario;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -22,7 +25,7 @@ public class UsuarioService {
 
     public void atualizarInformacoes(Usuario usuario, DTODadosUsuario dados) {
         if (dados.nome() != null){
-            usuario.setNome_usuario(dados.nome());
+            usuario.setNomeUsuario(dados.nome());
         }
         if (dados.email() != null){
             usuario.setEmail(dados.email());
@@ -32,4 +35,14 @@ public class UsuarioService {
         }
     }
 
+    public Usuario login(String nome, String email) {
+        // Busca o usuário pelo nome e e-mail
+        Optional<Usuario> usuarioOptional = repository.findByNomeUsuarioAndEmail(nome, email);
+
+        if (usuarioOptional.isPresent()) {
+            return usuarioOptional.get(); // Login bem-sucedido, retorna o usuário
+        } else {
+            throw new EntityNotFoundException("Usuário não encontrado ou dados incorretos"); // Nome ou e-mail inválido
+        }
+    }
 }
